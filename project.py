@@ -87,10 +87,43 @@ def parse_args():
     parser.add_argument("output_file", type=str, help="Output file path")
     return parser.parse_args()
 
+def load_data(input_file):
+    ext = Path(input_file).suffix
+    if ext == ".json":
+        return load_json(input_file)
+    elif ext == ".yaml" or ext == ".yml":
+        return load_yaml(input_file)
+    elif ext == ".xml":
+        return load_xml(input_file)
+    else:
+        print("Invalid input file format")
+        return None
+
+
+def save_data(data, output_file):
+    if data is None:
+        print("No data to save")
+        return
+    
+    ext = Path(output_file).suffix
+    if ext == ".json":
+        save_json(data, output_file)
+    elif ext == ".yaml" or ext == ".yml":
+        save_yaml(data, output_file)
+    elif ext == ".xml":
+        save_xml(data, output_file)
+    else:
+        print("Invalid output file format")
+        return
+
 def main():
     args = parse_args()
-    input_file_json = load_json(args.input_file)
-    print(input_file_json)
+    data = load_data(args.input_file)
+
+    if data is None:
+        return
+    
+    save_data(data, args.output_file)
 
 
 if __name__ == "__main__":
