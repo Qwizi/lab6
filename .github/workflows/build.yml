@@ -1,0 +1,37 @@
+name: Build and Upload EXE
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12.4'
+
+    - name: Install dependencies
+      run: |
+        ./installResources.ps1  # Execute your installation script
+
+    - name: Build executable
+      run: |
+        pyinstaller --onefile project.py
+
+    - name: Upload EXE artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: converer
+        path: dist/project.exe  # Adjust the path to your executable
+
